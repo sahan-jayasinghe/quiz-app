@@ -1,6 +1,6 @@
 package com.sahan.quizapp.dao;
 
-import com.sahan.quizapp.Question;
+import com.sahan.quizapp.model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
