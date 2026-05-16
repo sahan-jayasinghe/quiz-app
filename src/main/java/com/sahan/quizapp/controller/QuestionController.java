@@ -1,11 +1,11 @@
 package com.sahan.quizapp.controller;
 
-
+import com.sahan.quizapp.dto.QuestionDto;
+import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.sahan.quizapp.model.Question;
 
 import java.util.List;
 
@@ -17,28 +17,30 @@ public class QuestionController {
     QuestionService questionService;
 
     @GetMapping("/allquestions")
-    public ResponseEntity<List<Question>> getAllQuestions(){
-        return questionService.getAllQuestions();
+    public ResponseEntity<List<QuestionDto>> getAllQuestions(){
+        ResponseEntity<List<QuestionDto>> response = questionService.getAllQuestions();
+        return response;
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Question>> getQuestionByCategory(@PathVariable String category){
-        return questionService.getQuestionByCategory(category);
+    public ResponseEntity<List<QuestionDto>> getQuestionByCategory(@PathVariable String category){
+        ResponseEntity<List<QuestionDto>> response = questionService.getQuestionByCategory(category);
+        return response;
     }
 
     @PostMapping("add")
-    public ResponseEntity<String> addQuestion(@RequestBody Question question){
-        return questionService.addQuestion(question);
+    public ResponseEntity<String> addQuestion(@RequestBody QuestionDto questionDto){
+        return questionService.addQuestion(QuestionMapper.toModel(questionDto));
     }
 
     @PutMapping("update")
-    public ResponseEntity<String> updateQuestion(@RequestBody Question question){
-        return questionService.updateQuestion(question);
+    public ResponseEntity<String> updateQuestion(@RequestBody QuestionDto questionDto){
+        return questionService.updateQuestion(QuestionMapper.toModel(questionDto));
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteQuestion(@RequestBody Question question){
-        return questionService.deleteQuestion(question);
+    public ResponseEntity<String> deleteQuestion(@RequestBody QuestionDto questionDto){
+        return questionService.deleteQuestion(QuestionMapper.toModel(questionDto));
     }
 
 }

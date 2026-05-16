@@ -1,5 +1,7 @@
 package com.sahan.quizapp.controller;
 
+import com.sahan.quizapp.dto.QuizDto;
+import com.sahan.quizapp.mapper.QuizMapper;
 import com.sahan.quizapp.model.QuestionWrapper;
 import com.sahan.quizapp.model.Response;
 import com.sahan.quizapp.service.QuizService;
@@ -17,19 +19,29 @@ public class QuizController {
     @Autowired
     QuizService quizService;
 
-    @PostMapping ("/create")
-    public ResponseEntity<String> createQuiz(@RequestParam String category, @RequestParam int numQ, @RequestParam String title){
-        return quizService.createQuiz(category,numQ,title);
+    @PostMapping("/create")
+    public ResponseEntity<String> createQuiz(@RequestParam String category, @RequestParam int numQ, @RequestParam String title) {
+        return quizService.createQuiz(category, numQ, title);
     }
 
-    @GetMapping ("/get/{id}")
-    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(@PathVariable Integer id){
+    @GetMapping("/get/{id}")
+    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(@PathVariable Integer id) {
         return quizService.getQuizQuestions(id);
     }
 
-    @PostMapping ("/submit/{id}")
-    public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id, @RequestBody List<Response> responses){
-        return quizService.submitQuiz(id,responses);
+    @PostMapping("/submit/{id}")
+    public ResponseEntity<Integer> submitQuiz(@PathVariable Integer id, @RequestBody List<Response> responses) {
+        return quizService.submitQuiz(id, responses);
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<QuizDto> getQuizById(@PathVariable Integer id) {
+        return quizService.getQuizById(id);
     }
 }
+
+
+
+
 

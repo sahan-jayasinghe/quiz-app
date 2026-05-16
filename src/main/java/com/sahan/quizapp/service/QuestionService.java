@@ -1,6 +1,8 @@
 package com.sahan.quizapp.service;
 
 import com.sahan.quizapp.dao.QuestionDao;
+import com.sahan.quizapp.dto.QuestionDto;
+import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +19,11 @@ public class QuestionService {
     QuestionDao questionDao;
 
 
-    public ResponseEntity<List<Question>> getAllQuestions(){
+    public ResponseEntity<List<QuestionDto>> getAllQuestions(){
         try {
-            return new ResponseEntity(questionDao.findAll(), HttpStatus.OK);
+            List<Question> questions = questionDao.findAll();
+            List<QuestionDto> dtos = QuestionMapper.toDtoList(questions);
+            return new ResponseEntity(dtos, HttpStatus.OK);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -27,8 +31,10 @@ public class QuestionService {
         return new ResponseEntity<>(new ArrayList<>(), HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<Question>> getQuestionByCategory(String category){
-        return new ResponseEntity(questionDao.findByCategory(category), HttpStatus.OK);
+    public ResponseEntity<List<QuestionDto>> getQuestionByCategory(String category){
+        List<Question> questions = questionDao.findByCategory(category);
+        List<QuestionDto> dtos = QuestionMapper.toDtoList(questions);
+        return new ResponseEntity(dtos, HttpStatus.OK);
     }
 
     public ResponseEntity<String> addQuestion(Question question) {
