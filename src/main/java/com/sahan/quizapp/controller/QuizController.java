@@ -1,12 +1,10 @@
 package com.sahan.quizapp.controller;
 
+import com.sahan.quizapp.dto.QuestionDto;
 import com.sahan.quizapp.dto.QuizDto;
-import com.sahan.quizapp.mapper.QuizMapper;
-import com.sahan.quizapp.model.QuestionWrapper;
 import com.sahan.quizapp.model.Response;
 import com.sahan.quizapp.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +23,7 @@ public class QuizController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(@PathVariable Integer id) {
+    public ResponseEntity<List<QuestionDto>> getQuizQuestions(@PathVariable Integer id) {
         return quizService.getQuizQuestions(id);
     }
 

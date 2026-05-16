@@ -18,9 +18,6 @@ public class QuestionMapper {
         dto.setOption2(question.getOption2());
         dto.setOption3(question.getOption3());
         dto.setOption4(question.getOption4());
-        dto.setRightAnswer(question.getRightAnswer());
-        dto.setDifficultyLevel(question.getDifficultyLevel());
-        dto.setCategory(question.getCategory());
         return dto;
     }
 
@@ -33,9 +30,6 @@ public class QuestionMapper {
         q.setOption2(dto.getOption2());
         q.setOption3(dto.getOption3());
         q.setOption4(dto.getOption4());
-        q.setRightAnswer(dto.getRightAnswer());
-        q.setDifficultyLevel(dto.getDifficultyLevel());
-        q.setCategory(dto.getCategory());
         return q;
     }
 

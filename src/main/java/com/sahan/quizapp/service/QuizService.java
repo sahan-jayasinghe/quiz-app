@@ -2,10 +2,11 @@ package com.sahan.quizapp.service;
 
 import com.sahan.quizapp.dao.QuestionDao;
 import com.sahan.quizapp.dao.QuizDao;
+import com.sahan.quizapp.dto.QuestionDto;
 import com.sahan.quizapp.dto.QuizDto;
+import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.mapper.QuizMapper;
 import com.sahan.quizapp.model.Question;
-import com.sahan.quizapp.model.QuestionWrapper;
 import com.sahan.quizapp.model.Quiz;
 import com.sahan.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +39,16 @@ public class QuizService {
         return new ResponseEntity<>("success",HttpStatus.OK);
     }
 
-    public ResponseEntity<List<QuestionWrapper>> getQuizQuestions(Integer id){
+    public ResponseEntity<List<QuestionDto>> getQuizQuestions(Integer id){
         Optional<Quiz> quiz = quizDao.findById(id);
-        List<Question> questionFromDb = quiz.get().getQuestions();
-        List<QuestionWrapper> questionForUser = new ArrayList<>();
-        for(Question q : questionFromDb){
-            QuestionWrapper qw = new QuestionWrapper(q.getId(), q.getQuestionTitle(), q.getOption1(), q.getOption2(), q.getOption3(), q.getOption4());
-            questionForUser.add(qw);
+        if (quiz.isEmpty()) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
 
+        List<Question> questionFromDb = quiz.get().getQuestions();
+        List<QuestionDto> questionForUser = QuestionMapper.toDtoList(questionFromDb);
         return new ResponseEntity<>(questionForUser,HttpStatus.OK);
-    };
+    }
 
     public ResponseEntity<Integer> submitQuiz(Integer id, List<Response> responses) {
         Quiz quiz = quizDao.findById(id).get();
