@@ -1,6 +1,7 @@
 package com.sahan.quizapp.mapper;
 
 import com.sahan.quizapp.dto.QuestionDto;
+import com.sahan.quizapp.dto.QuestionGetDto;
 import com.sahan.quizapp.model.Question;
 
 import java.util.List;
@@ -21,6 +22,18 @@ public class QuestionMapper {
         return dto;
     }
 
+    public static QuestionGetDto toGetDto(Question question) {
+        if (question == null) return null;
+        QuestionGetDto dto = new QuestionGetDto();
+        dto.setId(question.getId());
+        dto.setQuestionTitle(question.getQuestionTitle());
+        dto.setOption1(question.getOption1());
+        dto.setOption2(question.getOption2());
+        dto.setOption3(question.getOption3());
+        dto.setOption4(question.getOption4());
+        return dto;
+    }
+
     public static Question toModel(QuestionDto dto) {
         if (dto == null) return null;
         Question q = new Question();
@@ -30,12 +43,33 @@ public class QuestionMapper {
         q.setOption2(dto.getOption2());
         q.setOption3(dto.getOption3());
         q.setOption4(dto.getOption4());
+        q.setRightAnswer(dto.getRightAnswer());
+        q.setDifficultyLevel(dto.getDifficultyLevel());
+        q.setCategory(dto.getCategory());
+        return q;
+    }
+
+    public static Question toModelFromPost(QuestionGetDto dto) {
+        if (dto == null) return null;
+        Question q = new Question();
+        q.setId(dto.getId());
+        q.setQuestionTitle(dto.getQuestionTitle());
+        q.setOption1(dto.getOption1());
+        q.setOption2(dto.getOption2());
+        q.setOption3(dto.getOption3());
+        q.setOption4(dto.getOption4());
+        
         return q;
     }
 
     public static List<QuestionDto> toDtoList(List<Question> list) {
         if (list == null) return null;
         return list.stream().filter(Objects::nonNull).map(QuestionMapper::toDto).collect(Collectors.toList());
+    }
+
+    public static List<QuestionGetDto> toGetDtoList(List<Question> list) {
+        if (list == null) return null;
+        return list.stream().filter(Objects::nonNull).map(QuestionMapper::toGetDto).collect(Collectors.toList());
     }
 
     public static List<Question> toModelList(List<QuestionDto> list) {

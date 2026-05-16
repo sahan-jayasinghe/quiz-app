@@ -3,6 +3,7 @@ package com.sahan.quizapp.service;
 import com.sahan.quizapp.dao.QuestionDao;
 import com.sahan.quizapp.dao.QuizDao;
 import com.sahan.quizapp.dto.QuestionDto;
+import com.sahan.quizapp.dto.QuestionGetDto;
 import com.sahan.quizapp.dto.QuizDto;
 import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.mapper.QuizMapper;
@@ -39,14 +40,14 @@ public class QuizService {
         return new ResponseEntity<>("success",HttpStatus.OK);
     }
 
-    public ResponseEntity<List<QuestionDto>> getQuizQuestions(Integer id){
+    public ResponseEntity<List<QuestionGetDto>> getQuizQuestions(Integer id){
         Optional<Quiz> quiz = quizDao.findById(id);
         if (quiz.isEmpty()) {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
         }
 
         List<Question> questionFromDb = quiz.get().getQuestions();
-        List<QuestionDto> questionForUser = QuestionMapper.toDtoList(questionFromDb);
+        List<QuestionGetDto> questionForUser = QuestionMapper.toGetDtoList(questionFromDb);
         return new ResponseEntity<>(questionForUser,HttpStatus.OK);
     }
 

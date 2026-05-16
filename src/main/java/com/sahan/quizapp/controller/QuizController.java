@@ -1,6 +1,6 @@
 package com.sahan.quizapp.controller;
 
-import com.sahan.quizapp.dto.QuestionDto;
+import com.sahan.quizapp.dto.QuestionGetDto;
 import com.sahan.quizapp.dto.QuizDto;
 import com.sahan.quizapp.model.Response;
 import com.sahan.quizapp.service.QuizService;
@@ -23,7 +23,7 @@ public class QuizController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<List<QuestionDto>> getQuizQuestions(@PathVariable Integer id) {
+    public ResponseEntity<List<QuestionGetDto>> getQuizQuestions(@PathVariable Integer id) {
         return quizService.getQuizQuestions(id);
     }
 

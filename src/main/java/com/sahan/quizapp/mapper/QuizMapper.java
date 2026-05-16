@@ -27,6 +27,7 @@ public class QuizMapper {
         return q;
     }
 
+
     public static List<QuizDto> toDtoList(List<Quiz> list) {
         if (list == null) return null;
         return list.stream().filter(Objects::nonNull).map(QuizMapper::toDto).collect(Collectors.toList());
