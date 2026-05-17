@@ -7,15 +7,13 @@ import com.sahan.quizapp.dto.QuestionGetDto;
 import com.sahan.quizapp.dto.QuizDto;
 import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.mapper.QuizMapper;
+import com.sahan.quizapp.exception.ResourceNotFoundException;
 import com.sahan.quizapp.model.Question;
 import com.sahan.quizapp.model.Quiz;
 import com.sahan.quizapp.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,7 @@ public class QuizService {
     @Autowired
     QuestionDao questionDao;
 
-    public ResponseEntity<String> createQuiz(String category, int numQ, String title) {
+    public String createQuiz(String category, int numQ, String title) {
 
         List<Question> questions = questionDao.findRandomQuestionsByCategory(category, numQ);
         Quiz quiz = new Quiz();
@@ -37,22 +35,22 @@ public class QuizService {
         quiz.setQuestions(questions);
         quizDao.save(quiz);
 
-        return new ResponseEntity<>("success",HttpStatus.OK);
+        return "success";
     }
 
-    public ResponseEntity<List<QuestionGetDto>> getQuizQuestions(Integer id){
+    public List<QuestionGetDto> getQuizQuestions(Integer id){
         Optional<Quiz> quiz = quizDao.findById(id);
         if (quiz.isEmpty()) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException("Quiz not found with id: " + id);
         }
 
         List<Question> questionFromDb = quiz.get().getQuestions();
-        List<QuestionGetDto> questionForUser = QuestionMapper.toGetDtoList(questionFromDb);
-        return new ResponseEntity<>(questionForUser,HttpStatus.OK);
+        return QuestionMapper.toGetDtoList(questionFromDb);
     }
 
-    public ResponseEntity<Integer> submitQuiz(Integer id, List<Response> responses) {
-        Quiz quiz = quizDao.findById(id).get();
+    public Integer submitQuiz(Integer id, List<Response> responses) {
+        Quiz quiz = quizDao.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id: " + id));
         List<Question> questions = quiz.getQuestions();
 
         int num = 0;
@@ -64,15 +62,15 @@ public class QuizService {
             num++;
         }
 
-        return new ResponseEntity<>(marks, HttpStatus.OK);
+        return marks;
     }
 
-    public ResponseEntity<QuizDto> getQuizById(Integer id) {
+    public QuizDto getQuizById(Integer id) {
         Optional<Quiz> quiz = quizDao.findById(id);
         if (quiz.isPresent()) {
-            QuizDto dto = QuizMapper.toDto(quiz.get());
-            return new ResponseEntity<>(dto, HttpStatus.OK);
+            return QuizMapper.toDto(quiz.get());
         }
-        return ResponseEntity.notFound().build();    }
+        throw new ResourceNotFoundException("Quiz not found with id: " + id);
+    }
 
 }

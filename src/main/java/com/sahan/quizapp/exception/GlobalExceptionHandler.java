@@ -1,5 +1,8 @@
 package com.sahan.quizapp.exception;
 
+import com.sahan.quizapp.response.ApiResponse;
+import com.sahan.quizapp.response.ErrorDto;
+import com.sahan.quizapp.exception.ResourceNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -10,41 +13,53 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return new ResponseEntity<>(errors, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    protected ResponseEntity<ApiResponse<Object>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, WebRequest request) {
+        List<ErrorDto> errors = new ArrayList<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> errors.add(new ErrorDto(error.getField(), error.getDefaultMessage())));
+        ApiResponse<Object> api = new ApiResponse<>(false, null, "Validation failed", errors);
+        return new ResponseEntity<>(api, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    protected ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex) {
-        Map<String, String> errors = new HashMap<>();
+    protected ResponseEntity<ApiResponse<Object>> handleConstraintViolation(ConstraintViolationException ex) {
+        List<ErrorDto> errors = new ArrayList<>();
         ex.getConstraintViolations().forEach(v -> {
             String path = v.getPropertyPath().toString();
-            errors.put(path, v.getMessage());
+            errors.add(new ErrorDto(path, v.getMessage()));
         });
-        return new ResponseEntity<>(errors, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        ApiResponse<Object> api = new ApiResponse<>(false, null, "Validation failed", errors);
+        return new ResponseEntity<>(api, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    protected ResponseEntity<Object> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    protected ResponseEntity<ApiResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String message = String.format("Parameter '%s' has invalid value '%s'", ex.getName(), ex.getValue());
-        Map<String, String> body = new HashMap<>();
-        body.put("error", message);
-        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        List<ErrorDto> errors = new ArrayList<>();
+        errors.add(new ErrorDto(ex.getName(), message));
+        ApiResponse<Object> api = new ApiResponse<>(false, null, "Type mismatch", errors);
+        return new ResponseEntity<>(api, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handleAll(Exception ex) {
-        Map<String, String> body = new HashMap<>();
-        body.put("error", ex.getMessage() != null ? ex.getMessage() : "unexpected error");
-        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    protected ResponseEntity<ApiResponse<Object>> handleAll(Exception ex) {
+        List<ErrorDto> errors = new ArrayList<>();
+        errors.add(new ErrorDto(null, ex.getMessage() != null ? ex.getMessage() : "unexpected error"));
+        ApiResponse<Object> api = new ApiResponse<>(false, null, "Server error", errors);
+        return new ResponseEntity<>(api, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    protected ResponseEntity<ApiResponse<Object>> handleNotFound(ResourceNotFoundException ex) {
+        List<ErrorDto> errors = new ArrayList<>();
+        errors.add(new ErrorDto(null, ex.getMessage()));
+        ApiResponse<Object> api = new ApiResponse<>(false, null, "Not found", errors);
+        return new ResponseEntity<>(api, new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 }
