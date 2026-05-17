@@ -3,6 +3,7 @@ package com.sahan.quizapp.controller;
 import com.sahan.quizapp.dto.QuestionDto;
 import com.sahan.quizapp.mapper.QuestionMapper;
 import com.sahan.quizapp.service.QuestionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +30,17 @@ public class QuestionController {
     }
 
     @PostMapping("add")
-    public ResponseEntity<String> addQuestion(@RequestBody QuestionDto questionDto){
+    public ResponseEntity<String> addQuestion(@Valid @RequestBody QuestionDto questionDto){
         return questionService.addQuestion(QuestionMapper.toModel(questionDto));
     }
 
     @PutMapping("update")
-    public ResponseEntity<String> updateQuestion(@RequestBody QuestionDto questionDto){
+    public ResponseEntity<String> updateQuestion(@Valid @RequestBody QuestionDto questionDto){
         return questionService.updateQuestion(QuestionMapper.toModel(questionDto));
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<String> deleteQuestion(@RequestBody QuestionDto questionDto){
+    public ResponseEntity<String> deleteQuestion(@Valid @RequestBody QuestionDto questionDto){
         return questionService.deleteQuestion(QuestionMapper.toModel(questionDto));
     }
 
