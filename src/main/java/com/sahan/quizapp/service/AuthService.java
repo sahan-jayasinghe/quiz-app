@@ -19,7 +19,8 @@ public class AuthService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder encoder;
 
     public String register(AuthRequest req) {
         if (userDao.existsByUsername(req.getUsername())) {
