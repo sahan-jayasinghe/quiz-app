@@ -21,12 +21,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String token = extractTokenFromRequest(request);
-            if (token != null && jwtTokenProvider.validateToken(token)) {
-                String username = jwtTokenProvider.getUsernameFromToken(token);
-                request.setAttribute("username", username);
+            if (token == null || !jwtTokenProvider.validateToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Unauthorized");
+                return;
             }
+            String username = jwtTokenProvider.getUsernameFromToken(token);
+            request.setAttribute("username", username);
         } catch (Exception e) {
             logger.error("JWT validation failed", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Unauthorized");
+            return;
         }
         filterChain.doFilter(request, response);
     }

@@ -13,6 +13,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    //private final SecretKey key =
+    //       Keys.secretKeyFor(SignatureAlgorithm.HS256);
+
     @Value("${jwt.secret:mySecretKeyForJWTTokenGenerationAndValidationPurpose}")
     private String jwtSecret;
 
@@ -31,7 +34,7 @@ public class JwtTokenProvider {
                 .subject(username)
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 

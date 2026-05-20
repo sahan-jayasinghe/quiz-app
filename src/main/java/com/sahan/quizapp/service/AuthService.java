@@ -26,11 +26,18 @@ public class AuthService {
         if (userDao.existsByUsername(req.getUsername())) {
             throw new RuntimeException("Username already taken");
         }
+        if (userDao.existsByEmail(req.getEmail())) {
+            throw new RuntimeException("Email already registered");
+        }
         User u = new User();
         u.setUsername(req.getUsername());
         u.setPassword(encoder.encode(req.getPassword()));
+        u.setEmail(req.getEmail());
+        u.setEnabled(true);
         userDao.save(u);
         return "User registered successfully";
+
+
     }
 
     public AuthResponse login(AuthRequest req) {
@@ -42,6 +49,7 @@ public class AuthService {
             throw new RuntimeException("Invalid username or password");
         }
         String token = jwtTokenProvider.generateToken(u.getUsername());
+
         return new AuthResponse(token, u.getUsername());
     }
 
