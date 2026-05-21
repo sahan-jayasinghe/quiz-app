@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class QuizController {
     QuizService quizService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
     public ResponseEntity<ApiResponse<String>> createQuiz(@RequestParam @NotBlank String category, @RequestParam @Min(1) int numQ, @RequestParam @NotBlank String title) {
         String message = quizService.createQuiz(category, numQ, title);
         ApiResponse<String> api = new ApiResponse<>(true, null, message, null);
@@ -32,6 +34,7 @@ public class QuizController {
     }
 
     @GetMapping("/get/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER','STUDENT')")
     public ResponseEntity<ApiResponse<List<QuestionGetDto>>> getQuizQuestions(@PathVariable Integer id) {
         List<QuestionGetDto> questions = quizService.getQuizQuestions(id);
         ApiResponse<List<QuestionGetDto>> api = new ApiResponse<>(true, questions, "success", null);
@@ -39,6 +42,7 @@ public class QuizController {
     }
 
     @PostMapping("/submit/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER','STUDENT')")
     public ResponseEntity<ApiResponse<Integer>> submitQuiz(@PathVariable Integer id, @Valid @RequestBody List<Response> responses) {
         Integer marks = quizService.submitQuiz(id, responses);
         ApiResponse<Integer> api = new ApiResponse<>(true, marks, "success", null);
@@ -47,6 +51,7 @@ public class QuizController {
 
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER','STUDENT')")
     public ResponseEntity<ApiResponse<QuizDto>> getQuizById(@PathVariable Integer id) {
         QuizDto quiz = quizService.getQuizById(id);
         ApiResponse<QuizDto> api = new ApiResponse<>(true, quiz, "success", null);

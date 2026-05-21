@@ -48,9 +48,9 @@ public class AuthService {
         if (!encoder.matches(req.getPassword(), u.getPassword())) {
             throw new RuntimeException("Invalid username or password");
         }
-        String token = jwtTokenProvider.generateToken(u.getUsername());
+        String token = jwtTokenProvider.generateToken(u.getUsername(), u.getRole());
 
-        return new AuthResponse(token, u.getUsername());
+        return new AuthResponse(token, u.getUsername(), u.getRole());
     }
 
 }

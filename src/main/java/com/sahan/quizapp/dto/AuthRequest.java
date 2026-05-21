@@ -1,5 +1,6 @@
 package com.sahan.quizapp.dto;
 
+import com.sahan.quizapp.model.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -14,5 +15,7 @@ public class AuthRequest {
 
     @NotBlank
     private String email;
+
+    private Role role = Role.STUDENT;
 
 }
