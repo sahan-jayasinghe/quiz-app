@@ -2,6 +2,7 @@ package com.sahan.quizapp.service;
 
 import com.sahan.quizapp.dao.UserDao;
 import com.sahan.quizapp.dto.AuthRequest;
+import com.sahan.quizapp.dto.LoginRequest;
 import com.sahan.quizapp.dto.AuthResponse;
 import com.sahan.quizapp.exception.ResourceNotFoundException;
 import com.sahan.quizapp.model.User;
@@ -40,7 +41,7 @@ public class AuthService {
 
     }
 
-    public AuthResponse login(AuthRequest req) {
+    public AuthResponse login(LoginRequest req) {
         User u = userDao.findByUsername(req.getUsername());
         if (u == null) {
             throw new ResourceNotFoundException("User not found");

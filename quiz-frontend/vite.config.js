@@ -29,7 +29,7 @@ export default defineConfig({
     // Force IPv4 binding — on Windows, Node sometimes tries ::
     // (IPv6 loopback) first, which can cause permission errors.
     host: "127.0.0.1",
-    port: 3000,
+    port: 3050,
 
     // ── CORS PROXY ──────────────────────────────────────────
     // PROBLEM: The browser's "Same-Origin Policy" blocks requests

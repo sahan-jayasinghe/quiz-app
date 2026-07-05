@@ -1,6 +1,7 @@
 package com.sahan.quizapp.controller;
 
 import com.sahan.quizapp.dto.AuthRequest;
+import com.sahan.quizapp.dto.LoginRequest;
 import com.sahan.quizapp.dto.AuthResponse;
 import com.sahan.quizapp.response.ApiResponse;
 import com.sahan.quizapp.service.AuthService;
@@ -25,7 +26,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AuthRequest req) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest req) {
         AuthResponse authResp = authService.login(req);
         ApiResponse<AuthResponse> api = new ApiResponse<>(true, authResp, "success", null);
         return new ResponseEntity<>(api, HttpStatus.OK);

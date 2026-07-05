@@ -44,7 +44,9 @@ public class CorsConfig {
         // Add your production frontend URL here when you deploy.
         config.setAllowedOrigins(List.of(
                 "http://127.0.0.1:3000", // Vite React dev server (IPv4)
-                "http://localhost:3000"  // Vite React dev server (localhost alias)
+                "http://localhost:3000",  // Vite React dev server (localhost alias)
+                "http://127.0.0.1:3050", // Vite React dev server (current config)
+                "http://localhost:3050"  // Vite React dev server (localhost alias)
         ));
 
         // Which HTTP headers the browser is allowed to send.
